@@ -1,0 +1,11 @@
+N:
+S A
+E:
+a b c
+P:
+S -> a
+S -> a A
+A -> b
+A -> c
+S:
+S
