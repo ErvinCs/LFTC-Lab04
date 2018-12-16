@@ -1,6 +1,7 @@
 package grammar;
 
 import exceptions.InvalidGrammarException;
+import javafx.scene.control.Tab;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class GrammarReader {
 
 
     public GrammarReader() throws FileNotFoundException{
-        this.file = new File("res/input/inputRG.txt");
+        this.file = new File("res/input/input1.txt");
         this.grammar = new Grammar();
         this.reader = new Scanner(System.in);
     }
@@ -36,32 +37,31 @@ public class GrammarReader {
         menu += "\t5.Check if the grammar is regular\n";
         menu += "\t6.Read a grammar\n";
         menu += "\t7.Load a grammar\n";
+        menu += "\t8.First of the grammar\n";
         return menu;
     }
 
     private void printNonTerminals() {
         System.out.println("Non-terminals: ");
-        for(String nt : this.grammar.getNonTerminals())
-            System.out.println(nt + " ");
+        this.grammar.getNonTerminals().forEach(nt -> System.out.println(nt + " "));
     }
 
     private void printTerminals() {
         System.out.println("Terminals: ");
-        for(String t : this.grammar.getTerminals())
-            System.out.println(t + " ");
+        this.grammar.getTerminals().forEach(t -> System.out.println(t + " "));
     }
 
     private void printProductions() {
         System.out.println("Productions: ");
-        for(Production p : this.grammar.getProductions())
-            System.out.println(p.toString());
+        this.grammar.getProductions().forEach(p ->System.out.println(p.toString()));
     }
 
     private void printProductionsFor(String terminal) {
         System.out.println("Productions<" + terminal + ">: ");
-        for(Production p : this.grammar.getProductions())
-            if (p.getFrom().equals(terminal))
-                System.out.print(p.toString());
+        //try {
+            //this.grammar.nonTerminalProductions(terminal).forEach(p -> System.out.print(p.toString()));
+        //} catch (Exception e) { System.out.println(e.toString());}
+        this.grammar.nonTerminalRHSProd(terminal).forEach(p -> System.out.println(p.toString()));
     }
 
 
@@ -82,7 +82,7 @@ public class GrammarReader {
         System.out.println("Enter number of non-terminals: ");
         int number = reader.nextInt();
         for(int i = 0; i < number; i++) {
-            System.out.println("Enter non-temrinal #" + i);
+            System.out.println("Enter non-terminal #" + i);
             String nonTerm = reader.next();
             grammar.addNonTerminal(nonTerm);
         }
@@ -92,7 +92,7 @@ public class GrammarReader {
         System.out.println("Enter number of terminals: ");
         int number = reader.nextInt();
         for(int i = 0; i < number; i++) {
-            System.out.println("Enter temrinal #" + i);
+            System.out.println("Enter terminal #" + i);
             String term = reader.next();
             grammar.addTerminal(term);
         }
@@ -174,6 +174,16 @@ public class GrammarReader {
                     loadGrammar();
                     System.out.println(this.grammar.toString());
                     break;
+                case 8:
+                    First first = new First(this.grammar);
+                    first.BuildFirst();
+                    System.out.println(first.toString());
+                    Follow follow = new Follow(this.grammar,first);
+                    follow.BuildFollow();
+                    System.out.println(follow.toString());
+                    Table table = new Table(first,follow,grammar);
+                    System.out.println(table.toString());
+                    table.getProdNum().forEach((k,v) -> System.out.println(k.toString() + " " + v));
             }
         }
     }

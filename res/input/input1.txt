@@ -1,11 +1,15 @@
 N:
-S A
+S A C B D
 E:
-a b c
++ * ( a )
 P:
-S -> a
-S -> a A
-A -> b
-A -> c
+S -> B A
+A -> + B A
+A -> Eps
+B -> D C
+C -> * D C
+C -> Eps
+D -> ( S )
+D -> a
 S:
 S

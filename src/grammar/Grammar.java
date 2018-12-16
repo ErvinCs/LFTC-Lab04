@@ -2,6 +2,7 @@ package grammar;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Grammar {
     private Set<String> terminals;
@@ -27,23 +28,17 @@ public class Grammar {
         if (this.terminals.contains(nonTerminal))
             throw new Exception("The given element is a Terminal!");
 
-        Set<Production> nonTermProds = new HashSet<>();
-        for(Production p : this.productions) {
-            if (p.getFrom().equals(nonTerminal)) {
-                nonTermProds.add(p);
-            }
-        }
-
-        return  nonTermProds;
+        return this.productions.stream()
+                .filter(elem -> elem.getFrom().equals(nonTerminal))
+                .collect(Collectors.toSet());
     }
 
-    public String setOfProductionsToString(Set<Production> prods) {
-        String output = "Set of Productions: ";
-        for(Production p : prods)
-            output += p.toString();
-        return output;
+    public Set<Production> nonTerminalRHSProd(String nonTerminal){
+        return this.productions.stream()
+                .filter(elem -> !elem.getFrom().equals(nonTerminal) && elem.getTo().contains(nonTerminal))
+                .collect(Collectors.toSet());
     }
-
+    //&& !elem.getFrom().equals(elem.getTo().get(elem.getTo().size() - 1))
     /**
      * If there exists any non-terminal N -> Eps and N != S, then the grammar is not regular
      * @return true if the Grammar is regular; false otherwise
@@ -61,31 +56,13 @@ public class Grammar {
 
     @Override
     public String toString() {
-        String output = "";
-        output += "Terminals: " + terminals.toString() + "\n";
-        output += "Non-terminals: " + nonTerminals.toString() + "\n";
-        output += "Productions: ";
-        for(Production p : productions)
-            output += p.toString();
-        output += "Starting Symbol: " + startingSymbol + "\n";
-        return output;
+        StringBuilder stringBuilder = new StringBuilder()
+                .append("Terminals: ").append(terminals.toString()).append("\n")
+                .append("Non-terminals: ").append(nonTerminals.toString()).append("\n")
+                .append("Productions: ").append("\n");
+        productions.forEach(elem -> stringBuilder.append(elem.toString()));
+        return stringBuilder.append("Starting Symbol: ").append(startingSymbol).append("\n").toString();
     }
-
-    public String terminalsToString() {
-        return "Terminals: " + terminals.toString();
-    }
-
-    public String nonTerminalsToString() {
-        return "Non-terminals: " + nonTerminals.toString();
-    }
-
-    public String productionsToString() {
-        String output = "Productions: ";
-        for(Production p : productions)
-            output += p.toString();
-        return output;
-    }
-
 
     public String getStartingSymbol() {
         return startingSymbol;
