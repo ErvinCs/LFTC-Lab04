@@ -16,7 +16,7 @@ public class GrammarReader {
 
 
     public GrammarReader() throws FileNotFoundException{
-        this.file = new File("res/input/input1.txt");
+        this.file = new File("res/input/grammar/input1.txt");
         this.grammar = new Grammar();
         this.reader = new Scanner(System.in);
     }

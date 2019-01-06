@@ -1,0 +1,6 @@
+beginp
+
+int a ;
+a <= a
+
+endp
