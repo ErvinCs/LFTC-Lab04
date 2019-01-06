@@ -5,6 +5,7 @@ import javafx.scene.control.Tab;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -184,6 +185,11 @@ public class GrammarReader {
                     Table table = new Table(first,follow,grammar);
                     System.out.println(table.toString());
                     table.getProdNum().forEach((k,v) -> System.out.println(k.toString() + " " + v));
+                    Parser parser = new Parser();
+                    parser.InitAlpha(new ArrayList<>(Arrays.asList("a", "*", "(", "a", "+", "a", ")")));
+                    parser.InitBeta(this.grammar.getStartingSymbol());
+                    parser.Start(table.getTable(),table.getProdNum());
+                    parser.ShowResult();
             }
         }
     }
