@@ -1,8 +1,13 @@
-package grammar;
+package parser;
+
 
 import javafx.util.Pair;
-
+import java.io.File;
 import java.util.*;
+
+import grammar.Production;
+//import scanner.auxiliary.Pair;
+
 
 public class Parser {
 

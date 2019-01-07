@@ -42,10 +42,13 @@ public class Follow {
         Set<String> follow = new HashSet<>();
 
         for (int i = elems.getTo().indexOf(symbol) + 1; i < elems.getTo().size(); i++){
-            follow.addAll(this.first.getFirsts().get(elems.getTo().get(i)));
-            if(!follow.contains("Eps"))
-                return follow;
-            follow.remove("Eps");
+            //Throws some wierd NullPonterException - hopefully this actually fixes it
+            if (this.first.getFirsts().get(elems.getTo().get(i)) != null) {
+                follow.addAll(this.first.getFirsts().get(elems.getTo().get(i)));
+                if (!follow.contains("Eps"))
+                    return follow;
+                follow.remove("Eps");
+            }
         }
 
         if (follows.get(elems.getFrom()) != null)

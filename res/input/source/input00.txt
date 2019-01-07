@@ -1,6 +1,6 @@
 beginp
 
 int a ;
-a <= a
+print a ;
 
 endp
