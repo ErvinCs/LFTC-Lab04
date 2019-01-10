@@ -1,7 +1,11 @@
 package grammar;
 
 import exceptions.InvalidGrammarException;
-import javafx.scene.control.Tab;
+import exceptions.LexicalError;
+import exceptions.SyntaxError;
+import parser.Parser;
+import parser.PraserLang;
+import scanner.CodeScanner;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,7 +20,7 @@ public class GrammarReader {
 
 
     public GrammarReader() throws FileNotFoundException{
-        this.file = new File("res/input/input1.txt");
+        this.file = new File("res/input/grammar/inputGrammarShort");//inputGrammarShort
         this.grammar = new Grammar();
         this.reader = new Scanner(System.in);
     }
@@ -38,7 +42,8 @@ public class GrammarReader {
         menu += "\t5.Check if the grammar is regular\n";
         menu += "\t6.Read a grammar\n";
         menu += "\t7.Load a grammar\n";
-        menu += "\t8.First of the grammar\n";
+        menu += "\t8.Parse Sequence\n";
+        menu += "\t9.Parse Program\n";
         return menu;
     }
 
@@ -179,17 +184,35 @@ public class GrammarReader {
                     First first = new First(this.grammar);
                     first.BuildFirst();
                     System.out.println(first.toString());
-                    Follow follow = new Follow(this.grammar,first);
+                    Follow follow = new Follow(this.grammar, first);
                     follow.BuildFollow();
                     System.out.println(follow.toString());
-                    Table table = new Table(first,follow,grammar);
+                    Table table = new Table(first, follow, grammar);
                     System.out.println(table.toString());
-                    table.getProdNum().forEach((k,v) -> System.out.println(k.toString() + " " + v));
+                    table.getProdNum().forEach((k, v) -> System.out.println(k.toString() + " " + v));
+
+//                    Parser parser = new Parser();
+//                    //TODO - parser.initAllFromFile(this.file);
+//                    parser.InitAlpha(new ArrayList<>(Arrays.asList("int", "a", ";", "a", "<=", "a", "endp")));
+//                    parser.InitBeta(this.grammar.getStartingSymbol());
+//                    parser.Start(table.getTable(), table.getProdNum());
+//                    parser.ShowResult();
+
                     Parser parser = new Parser();
                     parser.InitAlpha(new ArrayList<>(Arrays.asList("a", "*", "(", "a", "+", "a", ")")));
                     parser.InitBeta(this.grammar.getStartingSymbol());
-                    parser.Start(table.getTable(),table.getProdNum());
+                    parser.Start(table.getTable(), table.getProdNum());
                     parser.ShowResult();
+                case 9:
+                   //7 try {
+                        //CodeScanner cs = new CodeScanner("res/input/source/input00.txt", "res/output/outputInternal00.txt");
+                        //cs.codify();
+                        //PraserLang praser = new PraserLang(this.grammar, cs.getPif(), cs.getSt());
+                        PraserLang praser = new PraserLang(this.grammar);
+                        praser.Parse();
+//                    } catch (IOException | LexicalError | SyntaxError ex) {
+//                        System.out.println(ex.toString());
+//                    }
             }
         }
     }

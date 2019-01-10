@@ -25,18 +25,38 @@ public class Grammar {
     }
 
     public Set<Production> nonTerminalProductions(String nonTerminal) throws Exception {
-        if (this.terminals.contains(nonTerminal))
-            throw new Exception("The given element is a Terminal!");
+        //throws some wierd error but k
+        //if (this.terminals.contains(nonTerminal))
+        //    throw new Exception("The given element is a Terminal!");
 
-        return this.productions.stream()
-                .filter(elem -> elem.getFrom().equals(nonTerminal))
-                .collect(Collectors.toSet());
+        //StackOverflowError
+//        return this.productions.stream()
+//                .filter(elem -> elem.getFrom().equals(nonTerminal))
+//                .collect(Collectors.toSet());
+        Set<Production> nonTermProds = new HashSet<>();
+        for(Production p : this.productions) {
+            if (p.getFrom().equals(nonTerminal)) {
+                nonTermProds.add(p);
+            }
+        }
+
+        return nonTermProds;
     }
 
     public Set<Production> nonTerminalRHSProd(String nonTerminal){
-        return this.productions.stream()
-                .filter(elem -> !elem.getFrom().equals(nonTerminal) && elem.getTo().contains(nonTerminal))
-                .collect(Collectors.toSet());
+        //StackOverflowError
+//        return this.productions.stream()
+//                .filter(elem -> !elem.getFrom().equals(nonTerminal) && elem.getTo().contains(nonTerminal))
+//                .collect(Collectors.toSet());
+        Set<Production> nonTermProds = new HashSet<>();
+        for(Production p : this.productions) {
+            if (!p.getFrom().equals(nonTerminal) && p.getTo().contains(nonTerminal)) {
+                nonTermProds.add(p);
+            }
+        }
+
+        return nonTermProds;
+
     }
     //&& !elem.getFrom().equals(elem.getTo().get(elem.getTo().size() - 1))
     /**
