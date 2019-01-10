@@ -1,6 +1,3 @@
-beginp
-
-int a ;
-print a ;
-
-endp
+10
+3 1
+11

@@ -1,9 +1,10 @@
 package parser;
 
-import grammar.First;
-import grammar.Follow;
-import grammar.Grammar;
-import grammar.Table;
+import exceptions.LexicalError;
+import exceptions.SyntaxError;
+import grammar.*;
+import javafx.util.Pair;
+import scanner.CodeScanner;
 import scanner.ProgramInternalForm;
 import scanner.SymbolTable;
 
@@ -11,6 +12,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class PraserLang {
     private First first;
@@ -24,9 +26,9 @@ public class PraserLang {
     private String result;
 
     private File file;
+    private CodeScanner cs;
 
-    public PraserLang(Grammar grammar, ProgramInternalForm pif, SymbolTable st)
-    {
+    public PraserLang(Grammar grammar) {
         this.grammar = grammar;
 
         first = new First(grammar);
@@ -34,28 +36,90 @@ public class PraserLang {
         follow = new Follow(grammar, first);
         follow.BuildFollow();
         table = new Table(first, follow, grammar);
+        System.out.println(first.toString());
+        System.out.println(follow.toString());
+        System.out.println(table.toString());
 
         alpha = new LinkedList<>();
         beta = new LinkedList<>();
         pi = new ArrayList<>();
 
-        file = new File("res/input/grammar/inputGrammarShort");
+        file = new File("res/input/source/input00.txt");
         this.InitAlpha();
         this.InitBeta();
     }
 
-    public void Parse() {
+    public PraserLang(Grammar grammar, ProgramInternalForm pif, SymbolTable st) {
+        this.grammar = grammar;
 
+        first = new First(grammar);
+        first.BuildFirst();
+        follow = new Follow(grammar, first);
+        follow.BuildFollow();
+        table = new Table(first, follow, grammar);
+        System.out.println(first.toString());
+        System.out.println(follow.toString());
+        System.out.println(table.toString());
+
+        alpha = new LinkedList<>();
+        beta = new LinkedList<>();
+        pi = new ArrayList<>();
+
+        file = new File("res/input/source/input00.txt");
+        this.InitAlpha();
+        this.InitBeta();
+//        try {
+//            cs = new CodeScanner("res/input/source/input00.txt", "res/output/output00.txt");
+//            cs.codify();
+//        } catch (IOException | LexicalError | SyntaxError ex) {
+//            System.out.println(ex.toString());
+//        }
     }
 
+    public void Parse() {
+        while (true){
+            if (!beta.peekFirst().equals("Eps")) {
+//                System.out.println(pi.toString());
+//                System.out.println(beta.toString());
+//                System.out.println(alpha.toString());
+                if (Check(table.getTable().get(new Pair<>(beta.peekFirst(), alpha.peekFirst())), table.getProdNum()) != 0) {
+                    String peek = beta.peekFirst();
+                    beta.removeFirst();
+                    Push(table.getTable().get(new Pair<>(peek, alpha.peekFirst())).getValue());
+                    pi.add(table.getTable().get(new Pair<>(peek, alpha.peekFirst())).getKey());
+                } else if (table.getTable().get(new Pair<>(beta.peekFirst(), alpha.peekFirst())).getValue().get(0).equals("pop")) {
+                    beta.removeFirst();
+                    alpha.removeFirst();
+                } else if (table.getTable().get(new Pair<>(beta.peekFirst(), alpha.peekFirst())).getValue().get(0).equals("acc")) {
+                    result = "acc";
+                    break;
+                } else {
+                    result = "err";
+                    break;
+                }
+            }
+            else
+                beta.removeFirst();
+            ShowStepByStep();
+        }
+    }
+
+    private int Check(Pair<Integer, List<String>> item, Map<Production, Integer> prodNum)
+    {
+        for (Map.Entry<Production, Integer> pair : prodNum.entrySet())
+            if (pair.getKey().getTo().equals(item.getValue()))
+                return pair.getValue();
+        return 0;
+    }
     private void InitAlpha() {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
-            while(!(line.isEmpty())) {
+            while(line != null) {
                 String[] tokens = line.split(" ");
                 for(String token : tokens)
                     alpha.addLast(token);
+                line = br.readLine();
             }
             alpha.addLast("$");
         } catch (IOException ex) {

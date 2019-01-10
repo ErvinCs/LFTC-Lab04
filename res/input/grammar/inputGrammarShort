@@ -1,16 +1,13 @@
 N:
-program decllist decl data_type struct stmtlist stmt assignstmt inputstmt outputstmt condstmt whilestmt expr arithexpr boolexpr
+S DL D DT
 E:
-const int char struct beginp endp read write if then else while do done && || ! true false + * - / % < <= == > >= ; ( ) [ ] { } q w e r t y u i o p a s d f g h j k l z x c v b n m Q W E R T Y U I O P A S D F G H J K L Z X C V B N M 0 1 2 3 4 5 6 7 8 9 _
+10 11 1 2 3 4 9
 P:
-beginp -> declist endp
-decllist -> decl
-decllist -> decl decllist
-decl -> const data_type identifier ;
-decl -> data_type identifier ;
-data_type -> int
-data_type -> char
-data_type -> struct
-
+S -> 10 DL 11
+DL -> D
+DL -> D DL
+D -> DT 1
+DT -> 3
+DT -> 4
 S:
-beginp
+S

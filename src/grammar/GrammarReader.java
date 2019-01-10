@@ -1,7 +1,11 @@
 package grammar;
 
 import exceptions.InvalidGrammarException;
+import exceptions.LexicalError;
+import exceptions.SyntaxError;
 import parser.Parser;
+import parser.PraserLang;
+import scanner.CodeScanner;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,7 +20,7 @@ public class GrammarReader {
 
 
     public GrammarReader() throws FileNotFoundException{
-        this.file = new File("res/input/grammar/input1.txt");//inputGrammarShort
+        this.file = new File("res/input/grammar/inputGrammarShort");//inputGrammarShort
         this.grammar = new Grammar();
         this.reader = new Scanner(System.in);
     }
@@ -185,7 +189,7 @@ public class GrammarReader {
                     System.out.println(follow.toString());
                     Table table = new Table(first, follow, grammar);
                     System.out.println(table.toString());
-                    table.getProdNum().forEach((k,v) -> System.out.println(k.toString() + " " + v));
+                    table.getProdNum().forEach((k, v) -> System.out.println(k.toString() + " " + v));
 
 //                    Parser parser = new Parser();
 //                    //TODO - parser.initAllFromFile(this.file);
@@ -197,10 +201,18 @@ public class GrammarReader {
                     Parser parser = new Parser();
                     parser.InitAlpha(new ArrayList<>(Arrays.asList("a", "*", "(", "a", "+", "a", ")")));
                     parser.InitBeta(this.grammar.getStartingSymbol());
-                    parser.Start(table.getTable(),table.getProdNum());
+                    parser.Start(table.getTable(), table.getProdNum());
                     parser.ShowResult();
                 case 9:
-                    //TODO - ParserLang
+                   //7 try {
+                        //CodeScanner cs = new CodeScanner("res/input/source/input00.txt", "res/output/output00.txt");
+                        //cs.codify();
+                        //PraserLang praser = new PraserLang(this.grammar, cs.getPif(), cs.getSt());
+                        PraserLang praser = new PraserLang(this.grammar);
+                        praser.Parse();
+//                    } catch (IOException | LexicalError | SyntaxError ex) {
+//                        System.out.println(ex.toString());
+//                    }
             }
         }
     }
