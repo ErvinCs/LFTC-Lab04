@@ -4,6 +4,7 @@ import exceptions.LexicalError;
 import exceptions.SyntaxError;
 import grammar.*;
 import javafx.util.Pair;
+import scanner.auxiliary.*;
 import scanner.CodeScanner;
 import scanner.ProgramInternalForm;
 import scanner.SymbolTable;
@@ -68,12 +69,6 @@ public class PraserLang {
         file = new File("res/input/source/input00.txt");
         this.InitAlpha();
         this.InitBeta();
-//        try {
-//            cs = new CodeScanner("res/input/source/input00.txt", "res/output/output00.txt");
-//            cs.codify();
-//        } catch (IOException | LexicalError | SyntaxError ex) {
-//            System.out.println(ex.toString());
-//        }
     }
 
     public void Parse() {
@@ -113,18 +108,30 @@ public class PraserLang {
     }
     private void InitAlpha() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line = br.readLine();
-            while(line != null) {
-                String[] tokens = line.split(" ");
-                for(String token : tokens)
-                    alpha.addLast(token);
-                line = br.readLine();
-            }
-            alpha.addLast("$");
-        } catch (IOException ex) {
+            cs = new CodeScanner("res/input/source/input00.txt", "res/output/outputInternal00.txt");
+            cs.codify();
+        } catch (IOException | LexicalError | SyntaxError ex) {
             System.out.println(ex.toString());
         }
+        List<Integer> atoms = new ArrayList<>();
+        for(scanner.auxiliary.Pair<Integer, Integer> atom : cs.getPif().getAtoms()) {
+            alpha.addLast(atom.getLeft().toString());
+        }
+        alpha.addLast("$");
+
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            String line = br.readLine();
+//            while(line != null) {
+//                String[] tokens = line.split(" ");
+//                for(String token : tokens)
+//                    alpha.addLast(token);
+//                line = br.readLine();
+//            }
+//            alpha.addLast("$");
+//        } catch (IOException ex) {
+//            System.out.println(ex.toString());
+//        }
     }
 
     private void InitBeta() {

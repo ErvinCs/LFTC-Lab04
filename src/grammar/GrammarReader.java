@@ -205,7 +205,7 @@ public class GrammarReader {
                     parser.ShowResult();
                 case 9:
                    //7 try {
-                        //CodeScanner cs = new CodeScanner("res/input/source/input00.txt", "res/output/output00.txt");
+                        //CodeScanner cs = new CodeScanner("res/input/source/input00.txt", "res/output/outputInternal00.txt");
                         //cs.codify();
                         //PraserLang praser = new PraserLang(this.grammar, cs.getPif(), cs.getSt());
                         PraserLang praser = new PraserLang(this.grammar);
